@@ -51,6 +51,14 @@ def source(env, NEW_CLIENT, intervalo, RAM, CPU,WAITING ):
 random.seed(RANDOM_SEED)
 env = simpy.Environment()
 contador = simpy.Resource(env, capacidad = 1)
-env.process(source(env, NEW_CLIENTE, INTERVALO, contador))
-env.run()
+
+CPU = simpy.Resource(env, capacity=1)
+RAM= simpy.Container(env,init=100,capacity=100)
+WAITING = simpy.Resource(env,capacity=1)
+env.process(source(env, NEW_CLIENTE,INTERVALO,RAM, CPU,WAITING ))
+tiempop = 0
+env.run()# Setup and start the simulation
+
+print('TIEMPO PROMEDIO: %6.3f' % (tiempop/new_process))
+print('DESVIACION STANDARD PROMEDIO: %6.3f' % ())
 
