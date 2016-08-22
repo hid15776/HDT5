@@ -25,3 +25,32 @@ def source(env, NEW_CLIENT, intervalo, RAM, CPU,WAITING ):
         env.process(c)
         t = random.expovariate(1.0 / intervalo)
         yield env.timeout(t)
+        
+        def cliente (env, nombre, contador, esp):
+    llego = env.now
+    print('%7.4f %s: Entrada' % (llego, nombre)
+
+    with contador.request() as req:
+        paciencia = random.uniform(minP, maxP)
+        resultado = yield req | env.timeout(paciencia)
+
+        espero = env.now - llego
+
+        if req in resultado:
+            print ('7.4f %s: Espero %6.3f' % (env.now, nombre, espero))
+
+
+            tib = random.expovariate(1.0 / esp)
+            yield env.timeout(tib)
+            print('%7.4f %s: Finished' % (env.now, nombre))
+
+        else:
+            print('%7.4f %s: RENEGED after %6.3f' % (env.now, nombre, espero))
+
+
+random.seed(RANDOM_SEED)
+env = simpy.Environment()
+contador = simpy.Resource(env, capacidad = 1)
+env.process(source(env, NEW_CLIENTE, INTERVALO, contador))
+env.run()
+
