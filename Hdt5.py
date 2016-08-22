@@ -18,7 +18,7 @@ maxP = 3
 
 def source(env, NEW_CLIENT, intervalo, RAM, CPU,WAITING ):
     """Source generates customers randomly"""
-    for i in range(new_process):
+    for i in range(NEW_CLIENT):
         instruc = random.randint(1,10)
         memoria = random.randint(1,10)
         c = proceso(env, 'proceso%03d' % i, memoria, RAM, CPU, WAITING, instruc)
