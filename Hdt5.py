@@ -26,39 +26,22 @@ def source(env, NEW_CLIENT, intervalo, RAM, CPU,WAITING ):
         t = random.expovariate(1.0 / intervalo)
         yield env.timeout(t)
         
-        def cliente (env, nombre, contador, esp):
+        def cliente (env, nombre, memoria, RAM, CPU, WAITING, instrucciones):
     llego = env.now
-    print('%7.4f %s: Entrada' % (llego, nombre)
+    print('%7.4f %s: NEW. Esperando memoria. Entrada' % (llego, nombre)
 
-    with contador.request() as req:
-        paciencia = random.uniform(minP, maxP)
-        resultado = yield req | env.timeout(paciencia)
+    with RAM.get(memoria) as req:
+        yield req 
 
         espero = env.now - llego
+        print('%7.4f %s: Espero por memoria %6.3f' % (env.now, nombre, espero))
 
-        if req in resultado:
-            print ('7.4f %s: Espero %6.3f' % (env.now, nombre, espero))
-
-
-            tib = random.expovariate(1.0 / esp)
-            yield env.timeout(tib)
-            print('%7.4f %s: Finished' % (env.now, nombre))
-
-        else:
-            print('%7.4f %s: RENEGED after %6.3f' % (env.now, nombre, espero))
-
-
-random.seed(RANDOM_SEED)
-env = simpy.Environment()
-contador = simpy.Resource(env, capacidad = 1)
-
-CPU = simpy.Resource(env, capacity=1)
-RAM= simpy.Container(env,init=100,capacity=100)
-WAITING = simpy.Resource(env,capacity=1)
-env.process(source(env, NEW_CLIENTE,INTERVALO,RAM, CPU,WAITING ))
-tiempop = 0
-env.run()# Setup and start the simulation
-
-print('TIEMPO PROMEDIO: %6.3f' % (tiempop/new_process))
-print('DESVIACION STANDARD PROMEDIO: %6.3f' % ())
-
+        while instrucciones > 0:
+            with CPU.request() as reqCPU:
+                yield reqCPU
+                print('%7.4f %s: RUNNING. Instrucciones %6.3f' % (env.now,nombre,espero))
+                yield env.timeout(1)
+                if instrucciones > 3:
+                    instrucciones = instrucciones - 3
+                else:
+                    instrucciones = 0
